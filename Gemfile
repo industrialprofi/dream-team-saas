@@ -51,6 +51,9 @@ end
 group :development do
   # Use console on exceptions pages [https://github.com/rails/web-console]
   gem "web-console"
+
+  # Use Solargraph for code completion and analysis [https://solargraph.org/]
+  gem "solargraph"
 end
 
 group :test do
