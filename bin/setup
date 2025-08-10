@@ -15,10 +15,38 @@ FileUtils.chdir APP_ROOT do
   puts "== Installing dependencies =="
   system("bundle check") || system!("bundle install")
 
+  # Install Node.js dependencies if package.json exists
+  if File.exist?("package.json")
+    puts "\n== Installing Node.js dependencies =="
+    system!("yarn install")
+  end
+
   # puts "\n== Copying sample files =="
   # unless File.exist?("config/database.yml")
   #   FileUtils.cp "config/database.yml.sample", "config/database.yml"
   # end
+
+  puts "\n== Waiting for database to be ready =="
+  max_attempts = 30
+  attempt = 0
+  
+  loop do
+    attempt += 1
+    begin
+      system("bin/rails runner 'ActiveRecord::Base.connection'", out: File::NULL, err: File::NULL)
+      break if $?.success?
+    rescue
+      # Database not ready yet
+    end
+    
+    if attempt >= max_attempts
+      puts "Database is not ready after #{max_attempts} attempts. Please check your database configuration."
+      exit 1
+    end
+    
+    puts "Waiting for database... (attempt #{attempt}/#{max_attempts})"
+    sleep 2
+  end
 
   puts "\n== Preparing database =="
   system! "bin/rails db:prepare"

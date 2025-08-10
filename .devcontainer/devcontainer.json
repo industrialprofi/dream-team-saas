@@ -1,0 +1,168 @@
+{
+  "name": "Dream Team SaaS - Rails 8",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": ".."
+  },
+  
+  // Настройки контейнера
+  "workspaceFolder": "/workspace",
+  "shutdownAction": "stopContainer",
+  
+  // Проброс портов
+  "forwardPorts": [3000, 5432],
+  "portsAttributes": {
+    "3000": {
+      "label": "Rails Server",
+      "onAutoForward": "notify"
+    },
+    "5432": {
+      "label": "PostgreSQL",
+      "onAutoForward": "silent"
+    }
+  },
+  
+  // Переменные окружения
+  "containerEnv": {
+    "RAILS_ENV": "development",
+    "DATABASE_URL": "postgres://postgres:postgres@db:5432/dream_team_saas_development"
+  },
+  
+  // Настройки VS Code
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // === Ruby и Rails ===
+        
+        // Ruby - основная поддержка Ruby языка (подсветка синтаксиса, отладка)
+        // https://marketplace.visualstudio.com/items?itemName=rebornix.Ruby
+        "rebornix.Ruby",
+        
+        // Solargraph - Ruby Language Server (автодополнение, навигация, рефакторинг)
+        // https://marketplace.visualstudio.com/items?itemName=castwide.solargraph
+        "castwide.solargraph",
+        
+        // EndWise - автоматическое добавление 'end' для Ruby блоков
+        // https://marketplace.visualstudio.com/items?itemName=kaiwood.endwise
+        "kaiwood.endwise",
+        
+        // RuboCop - линтер и форматтер кода Ruby (проверка стиля)
+        // https://marketplace.visualstudio.com/items?itemName=misogi.ruby-rubocop
+        "misogi.ruby-rubocop",
+        
+        // Ruby Test Adapter - запуск и отладка Ruby тестов в VS Code
+        // https://marketplace.visualstudio.com/items?itemName=connorshea.vscode-ruby-test-adapter
+        "connorshea.vscode-ruby-test-adapter",
+        
+        // === Git и разработка ===
+        
+        // GitLens - расширенные возможности Git (история, blame, сравнение)
+        // https://marketplace.visualstudio.com/items?itemName=eamodio.gitlens
+        "eamodio.gitlens",
+        
+        // JSON - улучшенная поддержка JSON файлов (валидация, форматирование)
+        // https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-json
+        "ms-vscode.vscode-json",
+        
+        // Tailwind CSS IntelliSense - автодополнение классов Tailwind CSS
+        // https://marketplace.visualstudio.com/items?itemName=bradlc.vscode-tailwindcss
+        "bradlc.vscode-tailwindcss",
+        
+        // === Hotwire и фронтенд ===
+        
+        // TypeScript - улучшенная поддержка современного JavaScript (ES6+, modules)
+        // Полезно для Stimulus контроллеров и Hotwire, даже без TypeScript
+        // https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-typescript-next
+        "ms-vscode.vscode-typescript-next",
+        
+        // Prettier - форматтер кода для JavaScript, CSS, HTML, JSON
+        // https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode
+        "esbenp.prettier-vscode",
+        
+        // === Базы данных ===
+        
+        // PostgreSQL - подключение и работа с PostgreSQL базами данных
+        // https://marketplace.visualstudio.com/items?itemName=ms-ossdata.vscode-postgresql
+        "ms-ossdata.vscode-postgresql",
+        
+        // === Общие инструменты ===
+        
+        // YAML - поддержка YAML файлов (подсветка, валидация)
+        // https://marketplace.visualstudio.com/items?itemName=ms-vscode.vscode-yaml
+        "ms-vscode.vscode-yaml",
+        
+        // XML - поддержка XML файлов (подсветка, валидация, форматирование)
+        // https://marketplace.visualstudio.com/items?itemName=redhat.vscode-xml
+        "redhat.vscode-xml",
+        
+        // Hex Editor - просмотр и редактирование бинарных файлов
+        // https://marketplace.visualstudio.com/items?itemName=ms-vscode.hexeditor
+        "ms-vscode.hexeditor"
+      ],
+      
+      "settings": {
+        // Ruby настройки
+        "ruby.intellisense": "rubyLocate",
+        "ruby.codeCompletion": "rcodetools",
+        "ruby.format": "rubocop",
+        "ruby.lint": {
+          "rubocop": {
+            "useBundler": true
+          }
+        },
+        
+        // Solargraph настройки
+        "solargraph.diagnostics": true,
+        "solargraph.completion": true,
+        "solargraph.hover": true,
+        "solargraph.symbols": true,
+        "solargraph.definitions": true,
+        "solargraph.rename": true,
+        "solargraph.references": true,
+        "solargraph.folding": true,
+        "solargraph.formatting": true,
+        
+        // Общие настройки редактора
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.rulers": [80, 120],
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        
+        // Tailwind CSS
+        "tailwindCSS.includeLanguages": {
+          "erb": "html",
+          "ruby": "html"
+        },
+        "tailwindCSS.experimental.classRegex": [
+          ["class:\\s*['\"]([^'\"]*)['\"]", "['\"]([^'\"]*)['\"]"]
+        ],
+        
+        // Терминал
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash"
+          }
+        }
+      }
+    }
+  },
+  
+
+  
+  // Команды после создания контейнера
+  "postCreateCommand": "bin/setup",
+  
+  // Команды после запуска контейнера
+  "postStartCommand": "bundle install",
+  
+  // Настройки пользователя
+  "remoteUser": "vscode",
+  
+  // Дополнительные возможности
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  }
+}
