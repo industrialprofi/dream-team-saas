@@ -29,7 +29,7 @@ module DreamTeamSaas
     config.autoload_lib(ignore: %w[assets tasks])
 
     # Time zone configuration
-    config.time_zone = 'Moscow'
+    config.time_zone = "Moscow"
 
     # Configuration for the application, engines, and railties goes here.
     #
