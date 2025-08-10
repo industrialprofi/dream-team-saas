@@ -1,24 +1,5 @@
-# README
+## Запуск
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+bin/setup - подготовить мой проект к запуску после клонирования
 
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+bin/dev — запуск приложения каждый день в режиме разработкиgit 
