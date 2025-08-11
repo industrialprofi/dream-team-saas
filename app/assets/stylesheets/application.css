@@ -8,3 +8,10 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+/* Application styles with Tailwind v4 */
+@import "tailwindcss";
+
+/* Tailwind v4 content sources */
+@source "../../views";
+@source "../../javascript";
