@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+  # Devise routes with OmniAuth callbacks
+  devise_for :users, controllers: {
+    omniauth_callbacks: 'users/omniauth_callbacks'
+  }
+  
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
@@ -9,8 +14,21 @@ Rails.application.routes.draw do
   # get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
   # get "service-worker" => "rails/pwa#service_worker", as: :pwa_service_worker
 
-  # Defines the root path route ("/")
-  root to: 'pages#home'
+  # Root route - redirect authenticated users to documents
+  authenticated :user do
+    root to: 'documents#index', as: :authenticated_root
+  end
+  
+  unauthenticated do
+    root to: 'pages#home'
+  end
+
+  # Documents routes
+  resources :documents do
+    member do
+      post :generate_text
+    end
+  end
 
   # GoodJob Web UI for background jobs monitoring
   if Rails.env.production?

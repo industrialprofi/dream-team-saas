@@ -1,0 +1,66 @@
+<!-- Редактирование документа с автосейвом -->
+<div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
+  <div class="px-4 py-6 sm:px-0">
+    <div class="mb-6">
+      <h1 class="text-2xl font-bold text-gray-900">Редактирование документа</h1>
+      <p class="mt-1 text-sm text-gray-600">Изменения сохраняются автоматически</p>
+    </div>
+
+    <%= form_with(model: @document, local: false, class: "space-y-6", data: { controller: "autosave", autosave_url_value: document_path(@document) }) do |form| %>
+      <div class="bg-white shadow px-4 py-5 sm:rounded-lg sm:p-6">
+        <div class="space-y-6">
+          <div>
+            <%= form.label :title, "Название документа", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.text_field :title, 
+                class: "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
+                data: { action: "input->autosave#save" } %>
+            <% if @document.errors[:title].any? %>
+              <p class="mt-2 text-sm text-red-600"><%= @document.errors[:title].first %></p>
+            <% end %>
+          </div>
+
+          <div>
+            <%= form.label :content, "Содержание", class: "block text-sm font-medium text-gray-700" %>
+            <%= form.text_area :content, 
+                rows: 20,
+                class: "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md font-mono",
+                data: { action: "input->autosave#save" },
+                placeholder: "Начните писать ваш текст здесь..." %>
+            <% if @document.errors[:content].any? %>
+              <p class="mt-2 text-sm text-red-600"><%= @document.errors[:content].first %></p>
+            <% end %>
+          </div>
+          
+          <!-- Индикатор автосейва -->
+          <div class="flex items-center justify-between text-sm text-gray-500">
+            <div class="flex items-center space-x-4">
+              <span>Количество слов: <span id="word-count"><%= @document.word_count %></span></span>
+              <span id="autosave-status" class="text-green-600" data-autosave-target="status">Сохранено</span>
+            </div>
+            <div class="text-xs">
+              Последнее сохранение: <%= time_ago_in_words(@document.updated_at) %> назад
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-between">
+        <div class="flex space-x-3">
+          <%= link_to @document, class: "bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50" do %>
+            Отмена
+          <% end %>
+          <%= link_to @document, method: :delete, 
+              confirm: "Вы уверены, что хотите удалить этот документ?",
+              class: "bg-red-600 py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white hover:bg-red-700" do %>
+            Удалить
+          <% end %>
+        </div>
+        
+        <div class="flex space-x-3">
+          <%= form.submit "Сохранить", 
+              class: "inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+</div>

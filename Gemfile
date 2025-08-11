@@ -47,6 +47,9 @@ gem "thruster", require: false
 gem "devise"
 gem "omniauth-google-oauth2"
 
+# HTTP client for API requests
+gem "httparty"
+
 # Testing
 group :development, :test do
   gem "rspec-rails"

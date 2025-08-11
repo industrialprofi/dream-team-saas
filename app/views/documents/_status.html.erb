@@ -1,0 +1,30 @@
+<% case document.status %>
+<% when 'draft' %>
+  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+    <svg class="-ml-0.5 mr-1.5 h-2 w-2 text-gray-400" fill="currentColor" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" r="3" />
+    </svg>
+    Черновик
+  </span>
+<% when 'processing' %>
+  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+    <svg class="animate-spin -ml-0.5 mr-1.5 h-2 w-2 text-yellow-400" fill="none" viewBox="0 0 24 24">
+      <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+      <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    </svg>
+    Обрабатывается
+  </span>
+<% when 'completed' %>
+  <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+    <svg class="-ml-0.5 mr-1.5 h-2 w-2 text-green-400" fill="currentColor" viewBox="0 0 8 8">
+      <circle cx="4" cy="4" r="3" />
+    </svg>
+    Завершён
+  </span>
+<% end %>
+
+<% if local_assigns[:message] %>
+  <div class="ml-2 text-sm <%= local_assigns[:status] == 'error' ? 'text-red-600' : 'text-green-600' %>">
+    <%= message %>
+  </div>
+<% end %>

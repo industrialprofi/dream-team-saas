@@ -1,0 +1,116 @@
+<!-- Просмотр и редактирование документа -->
+<%= turbo_stream_from "document_#{@document.id}" %>
+
+<div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
+  <div class="px-4 py-6 sm:px-0">
+    <!-- Заголовок и действия -->
+    <div class="lg:flex lg:items-center lg:justify-between mb-6">
+      <div class="flex-1 min-w-0">
+        <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+          <%= @document.title %>
+        </h2>
+        <div class="mt-1 flex flex-col sm:flex-row sm:flex-wrap sm:mt-0 sm:space-x-6">
+          <div class="mt-2 flex items-center text-sm text-gray-500" id="document_status">
+            <%= render 'status', document: @document %>
+          </div>
+          <div class="mt-2 flex items-center text-sm text-gray-500">
+            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.746 0 3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+            <%= @document.word_count %> слов
+          </div>
+          <div class="mt-2 flex items-center text-sm text-gray-500">
+            <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            Обновлён <%= time_ago_in_words(@document.updated_at) %> назад
+          </div>
+        </div>
+      </div>
+      <div class="mt-5 flex lg:mt-0 lg:ml-4">
+        <%= link_to edit_document_path(@document), class: "sm:ml-3 inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50" do %>
+          <svg class="-ml-1 mr-2 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path>
+          </svg>
+          Редактировать
+        <% end %>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3">
+      <!-- Основной контент -->
+      <div class="lg:col-span-2">
+        <div class="bg-white shadow sm:rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Содержание документа</h3>
+            
+            <div id="document_content">
+              <%= render 'content', document: @document %>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Боковая панель с AI генерацией -->
+      <div class="lg:col-span-1">
+        <div class="bg-white shadow sm:rounded-lg">
+          <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">
+              <svg class="inline w-5 h-5 mr-2 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              AI Генератор
+            </h3>
+            
+            <% if @document.can_generate? %>
+              <%= form_with url: generate_text_document_path(@document), method: :post, local: false, class: "space-y-4" do |form| %>
+                <div>
+                  <%= form.label :prompt, "Задание для ИИ", class: "block text-sm font-medium text-gray-700" %>
+                  <%= form.text_area :prompt, 
+                      rows: 4,
+                      class: "mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md",
+                      placeholder: "Напиши сочинение на тему 'Дружба в романе Война и мир' объёмом 500 слов..." %>
+                </div>
+                
+                <%= form.submit "Сгенерировать текст", 
+                    class: "w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500",
+                    data: { disable_with: "Генерируется..." } %>
+              <% end %>
+            <% else %>
+              <div class="text-center py-4">
+                <svg class="mx-auto h-8 w-8 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                </svg>
+                <p class="mt-2 text-sm text-gray-500">Генерация недоступна</p>
+                <p class="text-xs text-gray-400">Документ обрабатывается</p>
+              </div>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- История запросов -->
+        <% if @request_logs.any? %>
+          <div class="mt-6 bg-white shadow sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+              <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">История генераций</h3>
+              <div class="space-y-3">
+                <% @request_logs.each do |log| %>
+                  <div class="border-l-4 border-blue-400 pl-4 py-2">
+                    <div class="text-sm text-gray-600 mb-1">
+                      <%= truncate(log.prompt, length: 100) %>
+                    </div>
+                    <div class="text-xs text-gray-400">
+                      <%= time_ago_in_words(log.created_at) %> назад
+                      • <%= log.tokens_used %> токенов
+                      • ~$<%= sprintf('%.4f', log.cost_estimate) %>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    </div>
+  </div>
+</div>
