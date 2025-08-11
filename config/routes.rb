@@ -11,4 +11,24 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   # root "posts#index"
+
+  # GoodJob Web UI for background jobs monitoring
+  if Rails.env.production?
+    # Protect with Basic Auth in production using env vars
+    good_job_constraint = lambda do |request|
+      auth = Rack::Auth::Basic::Request.new(request.env)
+      username = ENV.fetch('GOOD_JOB_DASHBOARD_USER', nil)
+      password = ENV.fetch('GOOD_JOB_DASHBOARD_PASSWORD', nil)
+      next false unless auth.provided? && auth.basic? && username && password
+
+      ActiveSupport::SecurityUtils.secure_compare(auth.credentials[0].to_s, username.to_s) &&
+        ActiveSupport::SecurityUtils.secure_compare(auth.credentials[1].to_s, password.to_s)
+    end
+
+    constraints(good_job_constraint) do
+      mount GoodJob::Engine => '/admin/good_job'
+    end
+  else
+    mount GoodJob::Engine => '/admin/good_job'
+  end
 end
