@@ -1,29 +1,29 @@
 {
   "name": "Dream Team SaaS - Rails 8",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": ".."
-  },
-  
+  "dockerComposeFile": [
+    "./.devcontainer/docker-compose.dev.yml"
+  ],
+  "service": "web",
   "workspaceFolder": "/workspace",
-  "shutdownAction": "stopContainer",
+  "shutdownAction": "stopCompose",
   
-  "forwardPorts": [3000, 5432],
+  "forwardPorts": [3000, 5433],
   "portsAttributes": {
     "3000": {
       "label": "Rails Server",
       "onAutoForward": "notify"
     },
-    "5432": {
-      "label": "PostgreSQL",
+    "5433": {
+      "label": "PostgreSQL (host)",
       "onAutoForward": "silent"
     }
   },
   
   "containerEnv": {
-    "RAILS_ENV": "development",
-    "DATABASE_URL": "postgres://postgres:postgres@db:5432/dream_team_saas_development"
+    "RAILS_ENV": "development"
   },
+  
+  "overrideCommand": false,
   
   "customizations": {
     "vscode": {
